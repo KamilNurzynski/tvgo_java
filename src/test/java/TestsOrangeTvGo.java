@@ -18,8 +18,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class TestsOrangeTvGo {
@@ -126,10 +125,10 @@ public class TestsOrangeTvGo {
         lets_start.click();
         WebElement fourth_movie_image = driver.findElementByXPath("//android.view.ViewGroup[2]/androidx." +
                 "recyclerview.widget.RecyclerView/androidx.appcompat.widget." +
-                "LinearLayoutCompat[1]/android.widget.ImageView");
-        System.out.println(fourth_movie_image);
+                "LinearLayoutCompat[4]/android.widget.ImageView");
         fourth_movie_image.click();
-        WebElement viewsOption = driver.findElementByAndroidUIAutomator(
+        //Scroll to Cast view
+        driver.findElementByAndroidUIAutomator(
                 "new UiScrollable(new UiSelector()).scrollIntoView(text(\"Obsada\"))");
 
 
@@ -147,45 +146,27 @@ public class TestsOrangeTvGo {
         ArrayList<String> actors = new ArrayList<String>();
         int i = 0;
         while (i < 15) {
-            List <MobileElement> cast = driver.findElementsById("com.orange.pl.orangetvgo:id/actor_name");
-            cast.forEach(name->name.getText());
+            List<MobileElement> cast = driver.findElementsById("com.orange.pl.orangetvgo:id/actor_name");
+            for (MobileElement record : cast) {
+                actors.add(record.getText());
+            }
+            touchAction.press(PointOption.point(startx, starty)).waitAction(
+                            WaitOptions.waitOptions(Duration.ofSeconds(2)))
+                    .moveTo(PointOption.point(endx, endy)).release().perform();
 
-
-
-            //actors.addAll()
+            i += 1;
         }
+        Set<String> castNewSet = new HashSet<>(actors);
+        List<String[]> pairs = new ArrayList<>();
+        for (String el : castNewSet) {
+            pairs.add(el.split(" "));
+        }
+        pairs.sort(Comparator.comparing(name -> name[1]));
 
+        List<String> sortedList = new ArrayList<>();
+        for (String[] name : pairs) {
+            sortedList.add(name[0] + " " + name[1]);
+        }
+        System.out.println(sortedList);
     }
-
-
 }
-//
-//    List<String> actors = new ArrayList<>();
-//        actors.add("Kamil Nurzynski");
-//                actors.add("Zofia Kaczmarek");
-//                actors.add("Jancio Wodnik");
-//                actors.add("Klakier Wspaniały");
-//                actors.add("Klakier Wpaniały");
-//
-//    Set<String> castNewSet = new HashSet<>(actors);
-//    List<String[]> pairs = new ArrayList<>();
-//        for(
-//    String el :castNewSet)
-//
-//    {
-//        pairs.add(el.split(" "));
-//    }
-//
-//        pairs.sort((name1,name2)->name1[1].
-//
-//    compareTo(name2[1]));
-//
-//    List<String> sortedList = new ArrayList<>();
-//        for(
-//    String[] name :pairs)
-//
-//    {
-//        sortedList.add(name[0] + " " + name[1]);
-//    }
-//
-//        System.out.println(sortedList);
