@@ -60,7 +60,7 @@ public class TestsOrangeTvGo {
         Assert.assertTrue(exist(driver, MobileBy.id("com.orange.pl.orangetvgo:id/content")),
                 "Content doesn't exist");
         Assert.assertTrue(exist(driver, MobileBy.id("com.orange.pl.orangetvgo:id/main_btn_bar_frame")),
-                "Bottom meny bar doesn't exist");
+                "Bottom menu bar doesn't exist");
         Assert.assertTrue(exist(driver, MobileBy.id("com.orange.pl.orangetvgo:id/toolbar")),
                 "Toolbar doesn't exist");
         Assert.assertTrue(exist(driver, MobileBy.id("com.orange.pl.orangetvgo:id/banner_small")),
@@ -106,7 +106,6 @@ public class TestsOrangeTvGo {
         }
         System.out.println("In the app is: " + titles.size() + " banners.");
         driver.quit();
-
     }
 
 
