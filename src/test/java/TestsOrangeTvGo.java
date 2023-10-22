@@ -1,3 +1,4 @@
+import io.appium.java_client.MobileBy;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
@@ -6,9 +7,12 @@ import io.appium.java_client.android.nativekey.KeyEvent;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -37,19 +41,46 @@ public class TestsOrangeTvGo {
 
     }
 
-
-    @Test
+    @Test(priority = 1)
     public void openApp() {
-        System.out.println("open app test");
-        //how to chck status 200 code????????
+        WebElement dismissButton = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
+        dismissButton.click();
+        WebElement agreementCheckbox = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_analytics_checkbox");
+        agreementCheckbox.click();
+        WebElement letsStart = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
+        letsStart.click();
+
+        driver.quit();
     }
 
-    @Test
+    @Test(priority = 2)
     public void verifyIfAllComponentsLoaded() {
-        //what is complete app?
+        WebElement dismissButton = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
+        dismissButton.click();
+        WebElement agreementCheckbox = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_analytics_checkbox");
+        agreementCheckbox.click();
+        WebElement letsStart = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
+        letsStart.click();
+
+
+        Assert.assertTrue(exist(driver, MobileBy.className("android.widget.FrameLayout")),
+                "Layout doesn't exist");
+        Assert.assertTrue(exist(driver, MobileBy.id("com.orange.pl.orangetvgo:id/main_content_root")),
+                "Main content root doesn't exist");
+        Assert.assertTrue(exist(driver, MobileBy.id("com.orange.pl.orangetvgo:id/content")),
+                "Content doesn't exist");
+        Assert.assertTrue(exist(driver, MobileBy.id("com.orange.pl.orangetvgo:id/main_btn_bar_frame")),
+                "Bottom meny bar doesn't exist");
+        Assert.assertTrue(exist(driver, MobileBy.id("com.orange.pl.orangetvgo:id/toolbar")),
+                "Toolbar doesn't exist");
+        Assert.assertTrue(exist(driver, MobileBy.id("com.orange.pl.orangetvgo:id/banner_small")),
+                "Banner doesn't exist");
+
+
+        driver.quit();
     }
 
-    @Test
+    @Test(priority = 3)
     public void countBanners() throws InterruptedException {
         WebElement dismiss_button = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
         dismiss_button.click();
@@ -59,33 +90,31 @@ public class TestsOrangeTvGo {
         lets_start.click();
         TouchAction touchAction = new TouchAction(driver);
 
-
         ArrayList<String> titles = new ArrayList<>();
         int offset = 0;
         boolean flag = true;
         while (flag) {
             Thread.sleep(2000);
-            WebElement banner = driver.findElementByAndroidUIAutomator(
-                    "resourceId(\"com.orange.pl.orangetvgo:id/banner_small\")");
+            WebElement banner = driver.findElement(MobileBy.id("com.orange.pl.orangetvgo:id/banner_small"));
 
             //////Swipe right to left//////
-            int startx = (int) (banner.getLocation().x + banner.getSize().getWidth()) * 8 / 9;
-            int endx = (int) (banner.getLocation().x + banner.getSize().getWidth()) / 9;
-            int starty = (int) (banner.getLocation().y + banner.getSize().height) / 2;
-            int endy = (int) (banner.getLocation().y + banner.getSize().height) / 2;
+            int startX = (int) (banner.getLocation().x + banner.getSize().getWidth()) * 8 / 9;
+            int endX = (int) (banner.getLocation().x + banner.getSize().getWidth()) / 9;
+            int startY = (int) (banner.getLocation().y + banner.getSize().height) / 2;
+            int endY = (int) (banner.getLocation().y + banner.getSize().height) / 2;
 
 
             banner.click();
-            WebElement title_obj = driver.findElementById("com.orange.pl.orangetvgo:id/text_expanded");
-            if (!titles.contains(title_obj.getText())) {
-                titles.add(title_obj.getText());
+            WebElement titleObj = driver.findElementById("com.orange.pl.orangetvgo:id/text_expanded");
+            if (!titles.contains(titleObj.getText())) {
+                titles.add(titleObj.getText());
                 offset += 1;
                 driver.pressKey(new KeyEvent(AndroidKey.BACK));
                 for (int i = 0; i < offset; i++) {
                     Thread.sleep(2000);
-                    touchAction.press(PointOption.point(startx, starty)).waitAction(
+                    touchAction.press(PointOption.point(startX, startY)).waitAction(
                                     WaitOptions.waitOptions(Duration.ofSeconds(2)))
-                            .moveTo(PointOption.point(endx, endy)).release().perform();
+                            .moveTo(PointOption.point(endX, endY)).release().perform();
                 }
             } else {
                 flag = false;
@@ -97,52 +126,66 @@ public class TestsOrangeTvGo {
 
     }
 
-    @Test
+
+    @Test(priority = 4)
     public void enterToFourthRecommendedMovie() throws InterruptedException {
-        WebElement dismiss_button = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
-        dismiss_button.click();
-        WebElement agreement_checkbox = driver.findElementById("com.orange.pl.orangetvgo:id/" +
-                "welcome_analytics_checkbox");
-        agreement_checkbox.click();
-        WebElement lets_start = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
-        lets_start.click();
-        WebElement fourth_movie_image = driver.findElementByXPath("//android.view.ViewGroup[2]/androidx." +
+        WebElement dismissButton = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
+        dismissButton.click();
+        WebElement agreementCheckbox = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_analytics_checkbox");
+        agreementCheckbox.click();
+        WebElement letsStart = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
+        letsStart.click();
+
+        Assert.assertTrue(exist(driver, MobileBy.xpath("//android.view.ViewGroup[2]/androidx." +
+                        "recyclerview.widget.RecyclerView/androidx.appcompat.widget." +
+                        "LinearLayoutCompat[4]/android.widget.ImageView")),
+                "Fourth movie doesn't exist");
+        WebElement fourthMovieImage = driver.findElementByXPath("//android.view.ViewGroup[2]/androidx." +
                 "recyclerview.widget.RecyclerView/androidx.appcompat.widget." +
                 "LinearLayoutCompat[4]/android.widget.ImageView");
-        System.out.println(fourth_movie_image);
-        fourth_movie_image.click();
+        fourthMovieImage.click();
 
+        driver.quit();
     }
 
-    @Test
+    @Test(priority = 5)
     public void collectCastFromFourthMovie() throws InterruptedException {
-        WebElement dismiss_button = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
-        dismiss_button.click();
-        WebElement agreement_checkbox = driver.findElementById("com.orange.pl.orangetvgo:id/" +
-                "welcome_analytics_checkbox");
-        agreement_checkbox.click();
-        WebElement lets_start = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
-        lets_start.click();
-        WebElement fourth_movie_image = driver.findElementByXPath("//android.view.ViewGroup[2]/androidx." +
+        WebElement dismissButton = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
+        dismissButton.click();
+        WebElement agreementCheckbox = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_analytics_checkbox");
+        agreementCheckbox.click();
+        WebElement letsStart = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
+        letsStart.click();
+
+        Assert.assertTrue(exist(driver, MobileBy.xpath("//android.view.ViewGroup[2]/androidx." +
+                        "recyclerview.widget.RecyclerView/androidx.appcompat.widget." +
+                        "LinearLayoutCompat[4]/android.widget.ImageView")),
+                "Fourth movie doesn't exist");
+        WebElement fourthMovieImage = driver.findElementByXPath("//android.view.ViewGroup[2]/androidx." +
                 "recyclerview.widget.RecyclerView/androidx.appcompat.widget." +
                 "LinearLayoutCompat[4]/android.widget.ImageView");
-        fourth_movie_image.click();
+        fourthMovieImage.click();
+
         //Scroll to Cast view
+        Assert.assertTrue(exist(driver, new MobileBy.ByAndroidUIAutomator(
+                        "new UiScrollable(new UiSelector()).scrollIntoView(text(\"Obsada\"))")),
+                "There is no cast label.");
+
         driver.findElementByAndroidUIAutomator(
                 "new UiScrollable(new UiSelector()).scrollIntoView(text(\"Obsada\"))");
 
-
         TouchAction touchAction = new TouchAction(driver);
-        WebDriver.Window device_size = driver.manage().window();
-        float screenWidth = device_size.getSize().width;
-        float screenHeight = device_size.getSize().height;
+
+        Assert.assertTrue(exist(driver, MobileBy.id("com.orange.pl.orangetvgo:id/actors_content")),
+                "Cast not added to movie.");
+        WebElement castBar = driver.findElementById("com.orange.pl.orangetvgo:id/actors_content");
+
 
         //////Swipe right to left//////
-        int startx = (int) screenWidth * 1 / 8;
-        int endx = 10;
-        int starty = (int) screenHeight * 5 / 6;
-        int endy = (int) screenHeight * 5 / 6;
-
+        int startX = (int) castBar.getSize().width * 7 / 8;
+        int endX = (int) (castBar.getLocation().x + castBar.getSize().width) / 8;
+        int startY = (int) (castBar.getLocation().y + castBar.getSize().height / 2);
+        int endY = (int) (castBar.getLocation().y + castBar.getSize().height / 2);
 
         ArrayList<String> actors = new ArrayList<String>();
         int i = 0;
@@ -151,12 +194,14 @@ public class TestsOrangeTvGo {
             for (MobileElement record : cast) {
                 actors.add(record.getText());
             }
-            touchAction.press(PointOption.point(startx, starty)).waitAction(
+
+            touchAction.press(PointOption.point(startX, startY)).waitAction(
                             WaitOptions.waitOptions(Duration.ofSeconds(2)))
-                    .moveTo(PointOption.point(endx, endy)).release().perform();
+                    .moveTo(PointOption.point(endX, endY)).release().perform();
 
             i += 1;
         }
+
         Set<String> castNewSet = new HashSet<>(actors);
         List<String[]> pairs = new ArrayList<>();
         for (String el : castNewSet) {
@@ -164,10 +209,18 @@ public class TestsOrangeTvGo {
         }
         pairs.sort(Comparator.comparing(name -> name[1]));
 
-        List<String> sortedList = new ArrayList<>();
+        List<String> sortedNames = new ArrayList<>();
         for (String[] name : pairs) {
-            sortedList.add(name[0] + " " + name[1]);
+            sortedNames.add(name[0] + " " + name[1]);
         }
-        System.out.println(sortedList);
+        System.out.println(sortedNames);
+
+        driver.quit();
     }
+
+
+    public static boolean exist(AndroidDriver driver, By locator) {
+        return driver.findElements(locator).size() > 0;
+    }
+
 }
