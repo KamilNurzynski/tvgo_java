@@ -8,8 +8,6 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
@@ -38,31 +36,23 @@ public class TestsOrangeTvGo {
         driver = new AndroidDriver<MobileElement>(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
         driver.manage().timeouts().implicitlyWait(10L, TimeUnit.SECONDS);
 
+        WebElement dismissButton = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
+        dismissButton.click();
+        WebElement agreementCheckbox = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_analytics_checkbox");
+        agreementCheckbox.click();
+        WebElement letsStart = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
+        letsStart.click();
+
 
     }
 
     @Test(priority = 1)
     public void openApp() {
-        WebElement dismissButton = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
-        dismissButton.click();
-        WebElement agreementCheckbox = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_analytics_checkbox");
-        agreementCheckbox.click();
-        WebElement letsStart = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
-        letsStart.click();
-
         driver.quit();
     }
 
     @Test(priority = 2)
     public void verifyIfAllComponentsLoaded() {
-        WebElement dismissButton = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
-        dismissButton.click();
-        WebElement agreementCheckbox = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_analytics_checkbox");
-        agreementCheckbox.click();
-        WebElement letsStart = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
-        letsStart.click();
-
-
         Assert.assertTrue(exist(driver, MobileBy.className("android.widget.FrameLayout")),
                 "Layout doesn't exist");
         Assert.assertTrue(exist(driver, MobileBy.id("com.orange.pl.orangetvgo:id/main_content_root")),
@@ -82,14 +72,7 @@ public class TestsOrangeTvGo {
 
     @Test(priority = 3)
     public void countBanners() throws InterruptedException {
-        WebElement dismiss_button = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
-        dismiss_button.click();
-        WebElement agreement_checkbox = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_analytics_checkbox");
-        agreement_checkbox.click();
-        WebElement lets_start = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
-        lets_start.click();
         TouchAction touchAction = new TouchAction(driver);
-
         ArrayList<String> titles = new ArrayList<>();
         int offset = 0;
         boolean flag = true;
@@ -129,13 +112,6 @@ public class TestsOrangeTvGo {
 
     @Test(priority = 4)
     public void enterToFourthRecommendedMovie() throws InterruptedException {
-        WebElement dismissButton = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
-        dismissButton.click();
-        WebElement agreementCheckbox = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_analytics_checkbox");
-        agreementCheckbox.click();
-        WebElement letsStart = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
-        letsStart.click();
-
         Assert.assertTrue(exist(driver, MobileBy.xpath("//android.view.ViewGroup[2]/androidx." +
                         "recyclerview.widget.RecyclerView/androidx.appcompat.widget." +
                         "LinearLayoutCompat[4]/android.widget.ImageView")),
@@ -150,12 +126,7 @@ public class TestsOrangeTvGo {
 
     @Test(priority = 5)
     public void collectCastFromFourthMovie() throws InterruptedException {
-        WebElement dismissButton = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
-        dismissButton.click();
-        WebElement agreementCheckbox = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_analytics_checkbox");
-        agreementCheckbox.click();
-        WebElement letsStart = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
-        letsStart.click();
+        TouchAction touchAction = new TouchAction(driver);
 
         Assert.assertTrue(exist(driver, MobileBy.xpath("//android.view.ViewGroup[2]/androidx." +
                         "recyclerview.widget.RecyclerView/androidx.appcompat.widget." +
@@ -169,12 +140,10 @@ public class TestsOrangeTvGo {
         //Scroll to Cast view
         Assert.assertTrue(exist(driver, new MobileBy.ByAndroidUIAutomator(
                         "new UiScrollable(new UiSelector()).scrollIntoView(text(\"Obsada\"))")),
-                "There is no cast label.");
+                "Cast(label) not added to movie.");
 
         driver.findElementByAndroidUIAutomator(
                 "new UiScrollable(new UiSelector()).scrollIntoView(text(\"Obsada\"))");
-
-        TouchAction touchAction = new TouchAction(driver);
 
         Assert.assertTrue(exist(driver, MobileBy.id("com.orange.pl.orangetvgo:id/actors_content")),
                 "Cast not added to movie.");
@@ -194,21 +163,18 @@ public class TestsOrangeTvGo {
             for (MobileElement record : cast) {
                 actors.add(record.getText());
             }
-
             touchAction.press(PointOption.point(startX, startY)).waitAction(
                             WaitOptions.waitOptions(Duration.ofSeconds(2)))
                     .moveTo(PointOption.point(endX, endY)).release().perform();
 
             i += 1;
         }
-
         Set<String> castNewSet = new HashSet<>(actors);
         List<String[]> pairs = new ArrayList<>();
         for (String el : castNewSet) {
             pairs.add(el.split(" "));
         }
         pairs.sort(Comparator.comparing(name -> name[1]));
-
         List<String> sortedNames = new ArrayList<>();
         for (String[] name : pairs) {
             sortedNames.add(name[0] + " " + name[1]);
@@ -222,5 +188,4 @@ public class TestsOrangeTvGo {
     public static boolean exist(AndroidDriver driver, By locator) {
         return driver.findElements(locator).size() > 0;
     }
-
 }
