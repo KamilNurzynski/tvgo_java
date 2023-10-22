@@ -1,5 +1,3 @@
-
-
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
@@ -60,23 +58,22 @@ public class TestsOrangeTvGo {
         WebElement lets_start = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
         lets_start.click();
         TouchAction touchAction = new TouchAction(driver);
-        WebDriver.Window device_size = driver.manage().window();
-        float screenWidth = device_size.getSize().width;
 
 
-        //////Swipe right to left//////
-        int startx = (int) screenWidth * 8 / 9;
-        int endx = (int) screenWidth / 9;
-        int starty = 670;
-        int endy = 670;
-
-        ArrayList<String> titles = new ArrayList<String>();
+        ArrayList<String> titles = new ArrayList<>();
         int offset = 0;
         boolean flag = true;
         while (flag) {
             Thread.sleep(2000);
             WebElement banner = driver.findElementByAndroidUIAutomator(
                     "resourceId(\"com.orange.pl.orangetvgo:id/banner_small\")");
+
+            //////Swipe right to left//////
+            int startx = (int) (banner.getLocation().x + banner.getSize().getWidth()) * 8 / 9;
+            int endx = (int) (banner.getLocation().x + banner.getSize().getWidth()) / 9;
+            int starty = (int) (banner.getLocation().y + banner.getSize().height) / 2;
+            int endy = (int) (banner.getLocation().y + banner.getSize().height) / 2;
+
 
             banner.click();
             WebElement title_obj = driver.findElementById("com.orange.pl.orangetvgo:id/text_expanded");
@@ -95,7 +92,8 @@ public class TestsOrangeTvGo {
             }
 
         }
-        System.out.println("In the app is: " + titles.size() + "banners.");
+        System.out.println("In the app is: " + titles.size() + " banners.");
+        driver.quit();
 
     }
 
@@ -103,7 +101,8 @@ public class TestsOrangeTvGo {
     public void enterToFourthRecommendedMovie() throws InterruptedException {
         WebElement dismiss_button = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
         dismiss_button.click();
-        WebElement agreement_checkbox = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_analytics_checkbox");
+        WebElement agreement_checkbox = driver.findElementById("com.orange.pl.orangetvgo:id/" +
+                "welcome_analytics_checkbox");
         agreement_checkbox.click();
         WebElement lets_start = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
         lets_start.click();
@@ -119,7 +118,8 @@ public class TestsOrangeTvGo {
     public void collectCastFromFourthMovie() throws InterruptedException {
         WebElement dismiss_button = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
         dismiss_button.click();
-        WebElement agreement_checkbox = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_analytics_checkbox");
+        WebElement agreement_checkbox = driver.findElementById("com.orange.pl.orangetvgo:id/" +
+                "welcome_analytics_checkbox");
         agreement_checkbox.click();
         WebElement lets_start = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
         lets_start.click();
@@ -142,6 +142,7 @@ public class TestsOrangeTvGo {
         int endx = 10;
         int starty = (int) screenHeight * 5 / 6;
         int endy = (int) screenHeight * 5 / 6;
+
 
         ArrayList<String> actors = new ArrayList<String>();
         int i = 0;
