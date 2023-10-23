@@ -36,14 +36,12 @@ public class TestsOrangeTvGo {
         driver = new AndroidDriver<MobileElement>(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
         driver.manage().timeouts().implicitlyWait(10L, TimeUnit.SECONDS);
 
-        WebElement dismissButton = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
-        dismissButton.click();
+        WebElement skipButton = driver.findElementById("com.orange.pl.orangetvgo:id/menu_login");
+        skipButton.click();
         WebElement agreementCheckbox = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_analytics_checkbox");
         agreementCheckbox.click();
         WebElement letsStart = driver.findElementById("com.orange.pl.orangetvgo:id/welcome_btn_start");
         letsStart.click();
-
-
     }
 
     @Test(priority = 1)
@@ -65,7 +63,6 @@ public class TestsOrangeTvGo {
                 "Toolbar doesn't exist");
         Assert.assertTrue(exist(driver, MobileBy.id("com.orange.pl.orangetvgo:id/banner_small")),
                 "Banner doesn't exist");
-
 
         driver.quit();
     }
@@ -107,7 +104,6 @@ public class TestsOrangeTvGo {
         System.out.println("In the app is: " + titles.size() + " banners.");
         driver.quit();
     }
-
 
     @Test(priority = 4)
     public void enterToFourthRecommendedMovie() throws InterruptedException {
